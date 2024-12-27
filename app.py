@@ -66,7 +66,7 @@ data_rumah = generate_rumah_data(20)
 
 # ----------- Fitur Pencarian Rumah ----------- 
 def fitur_pencarian():
-    st.header("🔍 Pencarian Rumah")
+    st.header("Pencarian Rumah")
     lokasi = st.selectbox("Pilih Lokasi", options=["Semua"] + list(set([rumah.lokasi for rumah in data_rumah])))
     min_harga = st.slider("Harga Minimum (juta)", 200, 2000, step=100)
     max_harga = st.slider("Harga Maximum (juta)", 200, 2000, step=100, value=2000)
@@ -88,46 +88,36 @@ def fitur_pencarian():
         else:
             st.warning("Tidak ada rumah yang sesuai.")
 
-# ----------- Fitur Statistik Rumah ----------- 
-def fitur_statistik():
-    st.header("📊 Statistik Rumah")
-    df = pd.DataFrame({
-        "Lokasi": [rumah.lokasi for rumah in data_rumah],
-        "Harga": [rumah.harga for rumah in data_rumah],
-        "Ukuran": [rumah.ukuran for rumah in data_rumah],
-        "Harga per Meter": [rumah.harga_per_meter() for rumah in data_rumah],
-    })
+# ----------- Fitur Sistem Cicilan Rumah ----------- 
+def fitur_sistem_cicilan():
+    st.header("Sistem Cicilan Rumah")
+    rumah_id = st.selectbox("Pilih ID Rumah", options=[rumah.id for rumah in data_rumah])
+    rumah = next(rumah for rumah in data_rumah if rumah.id == rumah_id)
 
-    fig = px.scatter(df, x="Ukuran", y="Harga", color="Lokasi",
-                     size="Harga per Meter", title="Distribusi Harga Rumah Berdasarkan Ukuran")
-    st.plotly_chart(fig, use_container_width=True)
+    bunga = st.slider("Bunga (%)", 1, 10, value=5)
+    tahun = st.slider("Cicilan (Tahun)", 1, 30, value=15)
+    st.image(rumah.gambar, caption=f"Rumah ID {rumah.id}", use_container_width=True)
+    st.write(rumah.tampilkan_info())
+    st.write(f"Simulasi Cicilan: {rumah.simulasi_cicilan(bunga, tahun):.2f} juta/bulan")
 
 # ----------- Fitur Detail Rumah ----------- 
 def fitur_detail():
-    st.header("📖 Detail Rumah")
+    st.header("Detail Rumah")
     rumah_id = st.selectbox("Pilih ID Rumah", options=[rumah.id for rumah in data_rumah])
     rumah = next(rumah for rumah in data_rumah if rumah.id == rumah_id)
 
     st.image(rumah.gambar, caption=f"Rumah ID {rumah.id}", use_container_width=True)
     st.write(rumah.tampilkan_info())
-    bunga = st.slider("Bunga (%)", 1, 10, value=5)
-    tahun = st.slider("Cicilan (Tahun)", 1, 30, value=15)
-    st.write(f"Simulasi Cicilan: {rumah.simulasi_cicilan(bunga, tahun):.2f} juta/bulan")
 
 # ----------- Fitur Perbandingan Rumah ----------- 
 def fitur_perbandingan():
-    st.header("📈 Perbandingan Rumah")
+    st.header("Perbandingan Rumah")
     selected_ids = st.multiselect("Pilih Rumah untuk Dibandingkan", options=[rumah.id for rumah in data_rumah])
     if len(selected_ids) > 1:
         rumah_terpilih = [rumah for rumah in data_rumah if rumah.id in selected_ids]
-        df = pd.DataFrame({
-            "ID": [rumah.id for rumah in rumah_terpilih],
-            "Lokasi": [rumah.lokasi for rumah in rumah_terpilih],
-            "Harga": [rumah.harga for rumah in rumah_terpilih],
-            "Ukuran": [rumah.ukuran for rumah in rumah_terpilih],
-            "Kamar Tidur": [rumah.kamar_tidur for rumah in rumah_terpilih],
-        })
-        st.write(df)
+        for rumah in rumah_terpilih:
+            st.image(rumah.gambar, caption=f"Rumah ID {rumah.id}", use_container_width=True)
+            st.write(rumah.tampilkan_info())
     else:
         st.info("Pilih minimal 2 rumah untuk dibandingkan.")
 
@@ -151,14 +141,14 @@ st.sidebar.title("Navigasi")
 fitur_ganti_background()
 fitur = st.sidebar.radio(
     "Pilih Fitur",
-    options=["Pencarian Rumah", "Statistik Rumah", "Detail Rumah", "Perbandingan Rumah"]
+    options=["Pencarian Rumah", "Sistem Cicilan Rumah", "Detail Rumah", "Perbandingan Rumah"]
 )
 
 # ----------- Menjalankan Fitur Berdasarkan Pilihan ----------- 
 if fitur == "Pencarian Rumah":
     fitur_pencarian()
-elif fitur == "Statistik Rumah":
-    fitur_statistik()
+elif fitur == "Sistem Cicilan Rumah":
+    fitur_sistem_cicilan()
 elif fitur == "Detail Rumah":
     fitur_detail()
 elif fitur == "Perbandingan Rumah":
