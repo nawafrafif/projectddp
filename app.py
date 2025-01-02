@@ -115,9 +115,11 @@ def fitur_perbandingan():
     selected_ids = st.multiselect("Pilih Rumah untuk Dibandingkan", options=[rumah.id for rumah in data_rumah])
     if len(selected_ids) > 1:
         rumah_terpilih = [rumah for rumah in data_rumah if rumah.id in selected_ids]
-        for rumah in rumah_terpilih:
-            st.image(rumah.gambar, caption=f"Rumah ID {rumah.id}", use_container_width=True)
-            st.write(rumah.tampilkan_info())
+        cols = st.columns(len(rumah_terpilih))
+        for i, rumah in enumerate(rumah_terpilih):
+            with cols[i]:
+                st.image(rumah.gambar, caption=f"Rumah ID {rumah.id}", use_container_width=True)
+                st.write(rumah.tampilkan_info())
     else:
         st.info("Pilih minimal 2 rumah untuk dibandingkan.")
 
