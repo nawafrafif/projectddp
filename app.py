@@ -5,7 +5,7 @@ import plotly.express as px
 
 # ----------- Class Rumah ----------- 
 class Rumah:
-    def __init__(self, id, lokasi, harga, ukuran, kamar_tidur, kamar_mandi, gambar):
+    def __init__(self, id, lokasi, harga, ukuran, kamar_tidur, kamar_mandi, gambar, bahan_bangunan, tahun_pembangunan, kondisi, furnitur):
         self.id = id
         self.lokasi = lokasi
         self.harga = harga
@@ -13,6 +13,10 @@ class Rumah:
         self.kamar_tidur = kamar_tidur
         self.kamar_mandi = kamar_mandi
         self.gambar = gambar
+        self.bahan_bangunan = bahan_bangunan
+        self.tahun_pembangunan = tahun_pembangunan
+        self.kondisi = kondisi
+        self.furnitur = furnitur
 
     def harga_per_meter(self):
         """Menghitung harga per meter persegi rumah"""
@@ -35,6 +39,10 @@ class Rumah:
         Kamar Tidur: {self.kamar_tidur}
         Kamar Mandi: {self.kamar_mandi}
         Harga per meter persegi: {self.harga_per_meter():.2f} juta/m²
+        Bahan Bangunan: {self.bahan_bangunan}
+        Tahun Pembangunan: {self.tahun_pembangunan}
+        Kondisi: {self.kondisi}
+        Furnitur: {', '.join(self.furnitur)}
         📞 Kontak: +62 123 456 789
         """
 
@@ -47,6 +55,13 @@ gambar_list = [
 # ----------- Fungsi Membuat Data Rumah ----------- 
 def generate_rumah_data(jumlah):
     lokasi_list = ["Jakarta", "Bandung", "Surabaya", "Yogyakarta", "Semarang", "Medan"]
+    bahan_list = ["Beton", "Kayu", "Batu Bata"]
+    kondisi_list = ["Baru", "Bekas Terawat", "Butuh Renovasi"]
+    furnitur_list = [
+        ["Sofa", "Meja Makan", "Lemari Baju"],
+        ["Tempat Tidur", "Meja Belajar", "Kursi Santai"],
+        ["Kitchen Set", "TV Stand", "Rak Buku"]
+    ]
     rumah_data = []
     for i in range(jumlah):
         rumah = Rumah(
@@ -56,7 +71,11 @@ def generate_rumah_data(jumlah):
             ukuran=random.randint(30, 300),
             kamar_tidur=random.randint(1, 5),
             kamar_mandi=random.randint(1, 3),
-            gambar=random.choice(gambar_list)
+            gambar=random.choice(gambar_list),
+            bahan_bangunan=random.choice(bahan_list),
+            tahun_pembangunan=random.randint(2000, 2023),
+            kondisi=random.choice(kondisi_list),
+            furnitur=random.choice(furnitur_list)
         )
         rumah_data.append(rumah)
     return rumah_data
